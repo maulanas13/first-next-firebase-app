@@ -113,7 +113,7 @@ export default function Home({contact}) {
       <main className={styles.contentWrap}>
         <div className={styles.splitRow}>
           <h1>Welcome to Quick New Contact App</h1>
-          <p>Add new people you've recently met and never forget again.</p>
+          <p>Add new people you&apos;ve recently met and never forget again.</p>
           <form className={styles.formWrap} onSubmit={formik.handleSubmit}>
             <label htmlFor='name'>Contact Name</label>
             <input 

@@ -1,4 +1,5 @@
-import styles from '../../styles/Home.module.css'
+import styles from '../../styles/Home.module.css';
+import Link from 'next/link';
 import firestore from '../../firebase/clientApp';
 import {
     doc,
@@ -23,8 +24,8 @@ function ContactDetail({contact}) {
 
     return (
         <div className={styles.mainWrap}>
-            <a href="/" style={{color: "#36454F", display: "inline-block", marginBottom: "1.5rem"}}>{"<"} Back</a>
-            <div className={styles.splitRow}>
+            <Link href="/" style={{color: "#36454F"}}>{"< Back"}</Link>
+            <div className={styles.splitRow} style={{marginTop: "1.5rem"}}>
                 <h1>Contact Detail</h1>
                 <p>Name: {contact.name}</p>
                 <p>Phone: {contact.phone ? contact.phone : "-"}</p>
