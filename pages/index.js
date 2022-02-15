@@ -1,25 +1,21 @@
-import Head from 'next/head'
-import Image from 'next/image'
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import styles from '../styles/Home.module.css'
+import styles from '../styles/Home.module.css';
 import firestore from '../firebase/clientApp';
 import {
   collection,
-  QueryDocumentSnapshot,
-  DocumentData,
   query,
-  where,
-  limit,
   doc,
   getDocs,
   setDoc,
   deleteDoc,
   orderBy
 } from "@firebase/firestore";
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 import { useFormik } from 'formik';
 
+// Select data table target from firestore
 const contactCollection = collection(firestore,'contact');
 
 export async function getServerSideProps() {
@@ -42,14 +38,14 @@ export async function getServerSideProps() {
 };
 
 export default function Home({contact}) {
-  console.log("40", contact);
-
+  // REFRESH DATA SECTION
   const router = useRouter();
 
   const refreshData = () => {
     router.replace(router.asPath);
   };
 
+  // FORMIK SECTION
   const validate = values => {
     const errors = {}
 
@@ -69,15 +65,14 @@ export default function Home({contact}) {
     },
     validate,
     onSubmit: async (values, {resetForm}) => {
-      // get the current timestamp
+      // Get current timestamp to be use as id
       const createTimeId = Date.now().toString();
-      // create a pointer to our Document
+
+      // Target the destination on firestore
       const destination = doc(firestore, `contact/${createTimeId}`);
-      // structure the todo data
 
       try {
         await setDoc(destination, values);
-        //show a success message
         resetForm();
         refreshData();
         Swal.fire(
@@ -92,12 +87,10 @@ export default function Home({contact}) {
           'error'
         );
       };
-
-      // alert(JSON.stringify(values, null, 2));
-      
     }
-  })
+  });
 
+  // DELETE FUNCTION SECTION
   const deleteContact = async (documentId) => {
     const selectedContact = doc(firestore,`contact/${documentId}`);
     await deleteDoc(selectedContact);
@@ -114,7 +107,7 @@ export default function Home({contact}) {
       <Head>
         <title>Quick Contact App</title>
         <meta name="description" content="My first Next.js firebase project" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/contact_favicon.png" />
       </Head>
 
       <main className={styles.contentWrap}>
@@ -130,7 +123,7 @@ export default function Home({contact}) {
               value={formik.values.name} 
               onChange={formik.handleChange}
             />
-            {formik.errors.name ? <div>{formik.errors.name}</div> : null}
+            {formik.errors.name ? <div style={{color: "red", fontSize: "0.75rem"}}>{formik.errors.name}</div> : null}
             <label htmlFor='phone'>Phone Number</label>
             <input 
               id='phone' 
@@ -155,16 +148,18 @@ export default function Home({contact}) {
               value={formik.values.where} 
               onChange={formik.handleChange}
             />
-
             <button type="submit">Submit</button>
           </form>
         </div>
         <div className={styles.splitRow}>
           <h1>Contact List (A~Z)</h1>
+          <p>Click the list name for detail.</p>
           <ol>
             {contact.map((val, index) => (
-                <li key={val.id}>
-                  <Link href={`/contact/${val.id}`}>{val.name}</Link> - {val.phone}{" "}
+                <li className={styles.contactList} key={val.id}>
+                  <Link href={`/contact/${val.id}`}>
+                    <span>{index + 1}. {val.name} - {val.phone ? val.phone : "no phone"}{" "}</span>
+                  </Link>
                   <button onClick={() => deleteContact(val.id)}>Delete</button>
                 </li>
               ))

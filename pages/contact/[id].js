@@ -23,13 +23,13 @@ function ContactDetail({contact}) {
 
     return (
         <div className={styles.mainWrap}>
-            <a href="/">Back</a>
-            <div className={styles.contentWrap}>
+            <a href="/" style={{color: "#36454F", display: "inline-block", marginBottom: "1.5rem"}}>{"<"} Back</a>
+            <div className={styles.splitRow}>
                 <h1>Contact Detail</h1>
-                <h3>Name: {contact.name}</h3>
-                <h3>Phone: {contact.phone}</h3>
-                <h3>Email: {contact.email}</h3>
-                <h3>Where you met at first time: {contact.where ? contact.where : "-"}</h3>
+                <p>Name: {contact.name}</p>
+                <p>Phone: {contact.phone ? contact.phone : "-"}</p>
+                <p>Email: {contact.email ? contact.email : "-"}</p>
+                <p>Where you met at first time: {contact.where ? contact.where : "-"}</p>
             </div>
         </div>
     )
