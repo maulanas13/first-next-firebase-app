@@ -39,7 +39,7 @@ export async function getServerSideProps() {
       contact: result
     }
   }
-}
+};
 
 export default function Home({contact}) {
   console.log("40", contact);
