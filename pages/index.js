@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import styles from '../styles/Home.module.css'
 import firestore from '../firebase/clientApp';
 import {
@@ -87,7 +88,7 @@ export default function Home({contact}) {
       } catch (error) {
         Swal.fire(
           'Error',
-          '"An error occurred while adding contact',
+          'An error occurred while adding contact',
           'error'
         );
       };
@@ -119,7 +120,7 @@ export default function Home({contact}) {
       <main className={styles.contentWrap}>
         <div className={styles.splitRow}>
           <h1>Welcome to Quick New Contact App</h1>
-          <p>Add new people you've recently met and never forget again</p>
+          <p>Add new people you've recently met and never forget again.</p>
           <form className={styles.formWrap} onSubmit={formik.handleSubmit}>
             <label htmlFor='name'>Contact Name</label>
             <input 
@@ -162,8 +163,8 @@ export default function Home({contact}) {
           <h1>Contact List (A~Z)</h1>
           <ol>
             {contact.map((val, index) => (
-                <li key={index}>
-                  {val.name} - {val.phone}{" "}
+                <li key={val.id}>
+                  <Link href={`/contact/${val.id}`}>{val.name}</Link> - {val.phone}{" "}
                   <button onClick={() => deleteContact(val.id)}>Delete</button>
                 </li>
               ))
