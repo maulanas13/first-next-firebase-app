@@ -15,7 +15,7 @@
 
 .splitRow {
   background-color: white;
-  border-radius: .5rem;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   height: 50%;
@@ -26,6 +26,20 @@
   box-shadow: 0px 1px 6px #d7d7d8;
   -webkit-box-shadow: 0px 1px 6px #d7d7d8;
   -moz-box-shadow: 0px 1px 6px #d7d7d8;
+}
+
+.formWrap {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+  row-gap: .75rem;
+  width: 40%;
+}
+
+.formWrap > input,
+.formWrap > button {
+  border-radius: 8px;
+  padding: .5rem;
 }
 
 .listRow {

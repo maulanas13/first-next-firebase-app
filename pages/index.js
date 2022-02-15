@@ -12,11 +12,12 @@ import {
   limit,
   doc,
   getDocs,
+  setDoc,
   deleteDoc,
   orderBy
 } from "@firebase/firestore";
 import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
+import { useFormik } from 'formik';
 
 const contactCollection = collection(firestore,'contact');
 
@@ -48,6 +49,54 @@ export default function Home({contact}) {
     router.replace(router.asPath);
   };
 
+  const validate = values => {
+    const errors = {}
+
+    if (!values.name) {
+      errors.name = "Please fill the name (mandatory)"
+    }
+
+    return errors;
+  }
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      phone: "",
+      email: "",
+      where: ""
+    },
+    validate,
+    onSubmit: async (values, {resetForm}) => {
+      // get the current timestamp
+      const createTimeId = Date.now().toString();
+      // create a pointer to our Document
+      const destination = doc(firestore, `contact/${createTimeId}`);
+      // structure the todo data
+
+      try {
+        await setDoc(destination, values);
+        //show a success message
+        resetForm();
+        refreshData();
+        Swal.fire(
+          'Success',
+          'New contact added',
+          'success'
+        );
+      } catch (error) {
+        Swal.fire(
+          'Error',
+          '"An error occurred while adding contact',
+          'error'
+        );
+      };
+
+      // alert(JSON.stringify(values, null, 2));
+      
+    }
+  })
+
   const deleteContact = async (documentId) => {
     const selectedContact = doc(firestore,`contact/${documentId}`);
     await deleteDoc(selectedContact);
@@ -71,13 +120,50 @@ export default function Home({contact}) {
         <div className={styles.splitRow}>
           <h1>Welcome to Quick New Contact App</h1>
           <p>Add new people you've recently met and never forget again</p>
+          <form className={styles.formWrap} onSubmit={formik.handleSubmit}>
+            <label htmlFor='name'>Contact Name</label>
+            <input 
+              id='name' 
+              type='text'
+              name='name' 
+              value={formik.values.name} 
+              onChange={formik.handleChange}
+            />
+            {formik.errors.name ? <div>{formik.errors.name}</div> : null}
+            <label htmlFor='phone'>Phone Number</label>
+            <input 
+              id='phone' 
+              type='text'
+              name='phone' 
+              value={formik.values.phone} 
+              onChange={formik.handleChange}
+            />
+            <label htmlFor='email'>Email Address</label>
+            <input 
+              id='email' 
+              type='email'
+              name='email' 
+              value={formik.values.email} 
+              onChange={formik.handleChange}
+            />
+            <label htmlFor='where'>Where do you meet this person at first time?</label>
+            <input 
+              id='where' 
+              type='text'
+              name='where' 
+              value={formik.values.where} 
+              onChange={formik.handleChange}
+            />
+
+            <button type="submit">Submit</button>
+          </form>
         </div>
         <div className={styles.splitRow}>
           <h1>Contact List (A~Z)</h1>
           <ol>
             {contact.map((val, index) => (
                 <li key={index}>
-                  {val.name} ({val.phone})
+                  {val.name} - {val.phone}{" "}
                   <button onClick={() => deleteContact(val.id)}>Delete</button>
                 </li>
               ))
